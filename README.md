@@ -1,2 +1,2 @@
 # Trading-simulator
-Tradiing simulator developed in C++
+Trading simulator developed in C++
