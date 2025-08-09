@@ -1,0 +1,6 @@
+[submodule "lib/cpr"]
+	path = lib/cpr
+	url = https://github.com/libcpr/cpr.git
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/microsoft/vcpkg
