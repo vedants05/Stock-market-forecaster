@@ -1,0 +1,16 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "windows-vcpkg-debug",
+            "displayName": "Windows vcpkg (Debug)",
+            "description": "Builds using the vcpkg toolchain with Visual Studio.",
+            "generator": "Visual Studio 17 2022",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        }
+    ]
+}
