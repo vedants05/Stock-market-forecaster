@@ -1,7 +1,4 @@
-# Ignore vcpkg build artifacts and installed libraries
 /vcpkg_installed/
-
-# Ignore common build folders
 /build/
 /.vscode/
 /.vs/

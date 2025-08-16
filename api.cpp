@@ -3,31 +3,43 @@
 #include "nlohmann/json.hpp" //for JSON parsing
 
 int main() {
-    // Use the nlohmann/json library for easy JSON parsing
+    // Create a JSON object type alias for convenience
     using json = nlohmann::json;
 
-    // 1. Construct the URL with your symbol and API key
+    //Construct the URL with your symbol and API key
     std::string symbol = "AAPL";
-    std::string api_key = "632a77d511934792817dbb33163035b7"; // <-- IMPORTANT: Replace with your actual key
+    std::string api_key = "632a77d511934792817dbb33163035b7"; 
     std::string url = "https://api.twelvedata.com/price?symbol=" + symbol + "&apikey=" + api_key;
 
-    // 2. Make the HTTP GET request using cpr
+    //cpr::response is the response type from cpr; which allows HTTP requests in C++
+    //Response object holds result of the HTTP request 
     cpr::Response r = cpr::Get(cpr::Url{url});
 
-    // 3. Check if the request was successful
+    //2xx status codes indicate success in HTTP so check if request was successful
     if (r.status_code == 200) {
         try {
-            // 4. Parse the JSON response text
+            //Parses the response body (t.text) as an JSON object
             json data = json::parse(r.text);
 
-            // 5. Extract the price from the JSON object
-            // The API returns a simple JSON like: {"price": "172.55000"}
-            std::string price_str = data["price"];
-            double price = std::stod(price_str); // Convert string to double
+            //Extracting price from the JSON object
 
-            std::cout << "Successfully fetched data!" << std::endl;
-            std::cout << "The current price of " << symbol << " is: $" << price << std::endl;
+            // Check if the "price" key exists in the JSON response
+            if (!data.contains("price")) {
+                std::cerr << "Price not found in the response." << std::endl;
+                return 1;
+            } 
+            else {
+                // Extract the price as a string
+                std::string price_str = data["price"];
 
+                // Convert string to double
+                double price = std::stod(price_str); 
+
+                std::cout << "Successfully fetched data!" << std::endl;
+                std::cout << "The current price of " << symbol << " is: $" << price << std::endl;
+
+            }
+        //Catching a JSON parsing error
         } catch (json::parse_error& e) {
             std::cerr << "Failed to parse JSON response: " << e.what() << std::endl;
         }
