@@ -21,10 +21,15 @@ double simple_moving_avg(std::vector<double> closing_prices, int start_index, in
 // Function to compute the standard deviation of prices in the SMA window
 double SMA_standard_deviation(std::vector<double> closing_prices, int timeframe) {
     double square_of_means = pow(accumulate(closing_prices.end() - timeframe, closing_prices.end(), 0.0) / timeframe , 2);
-    for (int i = 0; i < closing_prices.size(); i++) {
-        closing_prices[i] = closing_prices[i] * closing_prices[i]; 
+    /*for (int i = 0; i < closing_prices.size(); i++) {
+       closing_prices[i] = closing_prices[i] * closing_prices[i]; 
+    }*/
+    double sqr_sum = 0;
+    for (int i = closing_prices.size() - timeframe; i < closing_prices.size(); i++) {
+        sqr_sum = sqr_sum + (closing_prices[i] * closing_prices[i]);
     }
-    double mean_of_squares = accumulate(closing_prices.end() - timeframe, closing_prices.end(), 0.0) / timeframe;
+    //double mean_of_squares = accumulate(closing_prices.end() - timeframe, closing_prices.end(), 0.0) / timeframe;
+    double mean_of_squares = sqr_sum / timeframe;
     double standard_deviation = sqrt(mean_of_squares - square_of_means);
     return standard_deviation;
     
