@@ -9,11 +9,10 @@
 
 // Function to compute SMA
 double simple_moving_avg(std::vector<double> closing_prices, int start_index, int timeframe) {
-
-    double total = accumulate(closing_prices.begin() + start_index, closing_prices.begin() + timeframe + start_index, 0.0); /*
-    accumulate sums up elements from closing_prices[start_index], to closing_prices[start_index + timeframe], starting from 0.0
-    */
-
+    double total = 0;
+    for (int i = closing_prices.size() - timeframe; i < closing_prices.size(); i++) {
+        total = total + closing_prices[i];
+    }
     double simple_moving_avg_n = total / timeframe;
     return simple_moving_avg_n;
 }
@@ -21,20 +20,17 @@ double simple_moving_avg(std::vector<double> closing_prices, int start_index, in
 // Function to compute the standard deviation of prices in the SMA window
 double SMA_standard_deviation(std::vector<double> closing_prices, int timeframe) {
     double square_of_means = pow(accumulate(closing_prices.end() - timeframe, closing_prices.end(), 0.0) / timeframe , 2);
-    /*for (int i = 0; i < closing_prices.size(); i++) {
-       closing_prices[i] = closing_prices[i] * closing_prices[i]; 
-    }*/
+
     double sqr_sum = 0;
     for (int i = closing_prices.size() - timeframe; i < closing_prices.size(); i++) {
         sqr_sum = sqr_sum + (closing_prices[i] * closing_prices[i]);
     }
-    //double mean_of_squares = accumulate(closing_prices.end() - timeframe, closing_prices.end(), 0.0) / timeframe;
+
     double mean_of_squares = sqr_sum / timeframe;
     double standard_deviation = sqrt(mean_of_squares - square_of_means);
     return standard_deviation;
     
 }
-
 
 // Function to compute Bollinger Bands from SMA and standard deviation
 std::pair<double,double> bollinger_bands(double simple_moving_avg_n, double standard_deviation) {
@@ -43,7 +39,6 @@ std::pair<double,double> bollinger_bands(double simple_moving_avg_n, double stan
     return std::make_pair(upper_bollinger_band, lower_bollinger_band);
 
 }
-
 
 double final_RSI(std::vector<double> closing_prices, int timeframe) {
     std::vector<double> daily_changes; // creates a vector to calculate the changes in price each day
@@ -69,8 +64,6 @@ double final_RSI(std::vector<double> closing_prices, int timeframe) {
         }
     }
 // vectors containing the gains and losses
-
-
     double avg_net_gain = 0;
     double avg_net_loss = 0;
     for (int k = 0; k < timeframe; k++) {
@@ -90,6 +83,11 @@ double final_RSI(std::vector<double> closing_prices, int timeframe) {
     return RSI_with_smoothing;
 
 }
+
+/* e.g. 28 values, start index = 4 means 
+
+*/
+
 
 
 int main () {
