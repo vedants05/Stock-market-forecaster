@@ -84,16 +84,27 @@ double final_RSI(std::vector<double> closing_prices, int timeframe) {
 
 }
 
-/* e.g. 28 values, start index = 4 means 
+double ndayEMA(std::vector<double> closing_prices, int EMArange) {
+    double multiplier = 2.0 / (EMArange+1);
+    double total = 0;
+    for (int i = 0; i < EMArange; i++) {
+        total = total + closing_prices[closing_prices.size()-2*EMArange+i];
+    }
+    double EMA = total / EMArange;
+    for (int j = 0; j < EMArange; j++) {
+        EMA = (closing_prices[closing_prices.size()-EMArange+j] - EMA)*(multiplier) + EMA;
+    }
+    return EMA;
 
-*/
+}
 
 
 
 int main () {
     // Example dataset of stock closing prices
-    std::vector<double> closing_prices = {10.32,11.78,11.11,11.88,11.03,12.72,11.29,12.93,11.33,11.20,13.37,12.69,
-    12.00,11.56,11.30,12.43,13.10,11.11,11.23,11.69,11.08,11.32,12.51,12.71,13.35,13.06,12.75,12.37};
+    std::vector<double> closing_prices = {195.64,196.45,196.58,198.42,198.78,199.2,200.3,201,201,201.08,201.45,201.5,201.56,202.38,202.67,202.92,203.35,205.17,
+    207.57,207.82,208.62,209.05,209.11,209.95,210.01,210.02,210.16,211.14,211.16,211.18,211.27,212.41,212.44,212.48,213.25,213.55,213.76,213.88,214.05,214.15,214.4,
+    220.03,224.9,226.01,227.16,227.18,227.76,229.31,229.35,229.65,230.49,230.56,230.89,231.59,232.78,233.33};
     int length = closing_prices.size(); // Total number of data points
     int days = 14; // SMA period to current day
     
@@ -104,5 +115,6 @@ int main () {
 
     std::cout << "The final RSI after calculating the RSI for day " << closing_prices.size() - days + 1 << " and smoothing for " << days << " days is: " 
     <<final_RSI(closing_prices, days) << std::endl;
+    std::cout << "MACD value is: " << ndayEMA(closing_prices, 12) - ndayEMA(closing_prices, 26);
     return 0;
 }
