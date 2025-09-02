@@ -9,6 +9,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(cpr CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 
-add_executable(trader api.cpp)
+add_executable(trader data_extraction/api.cpp data_extraction/api_utils.cpp)
 
 target_link_libraries(trader PRIVATE cpr::cpr nlohmann_json::nlohmann_json)
