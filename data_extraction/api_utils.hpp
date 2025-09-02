@@ -23,10 +23,11 @@ struct APIUrl {
     std::string symbol;
     std::string interval;
     std::string api_key;
-
+    std::string start_date; 
+    
     // Construct the full URL for the API request
     std::string get_url() const {
-        return base_url +"?symbol=" + symbol + "&interval=" + interval + "&apikey=" + api_key;
+        return base_url +"?symbol=" + symbol + "&interval=" + interval + "&apikey=" + api_key + "&start_date=" + start_date;
     }
 };
 

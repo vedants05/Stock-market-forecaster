@@ -16,9 +16,12 @@ int main() {
     api_url.base_url = "https://api.twelvedata.com/time_series";
     api_url.symbol = "AAPL";
     api_url.interval = "1day";
+    api_url.start_date = "2025-09-01"; 
 
     api_url.api_key = load_api_key("data_extraction/config.properties");
     std::cout << "Loaded API key: " << api_url.api_key << std::endl;
+
+
 
     std::string url = api_url.get_url();
 
