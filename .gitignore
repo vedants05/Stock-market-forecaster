@@ -2,3 +2,4 @@
 /build/
 /.vscode/
 /.vs/
+data_extraction/config.properties
