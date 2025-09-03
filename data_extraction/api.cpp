@@ -4,6 +4,7 @@
 #include "api_utils.hpp" //for OHLCV struct
 #include <cpr/cpr.h> //for HTTP requests
 #include "nlohmann/json.hpp" //for JSON parsing
+#include "features_functions.hpp"
 
 
 
@@ -16,12 +17,10 @@ int main() {
     api_url.base_url = "https://api.twelvedata.com/time_series";
     api_url.symbol = "AAPL";
     api_url.interval = "1day";
-    api_url.start_date = "2025-09-01"; 
+    api_url.start_date = "2015-09-03"; 
 
     api_url.api_key = load_api_key("data_extraction/config.properties");
     std::cout << "Loaded API key: " << api_url.api_key << std::endl;
-
-
 
     std::string url = api_url.get_url();
 
@@ -54,17 +53,16 @@ int main() {
                 ohlcv.close = std::stod(item["close"].get<std::string>());
                 ohlcv.volume = std::stoll(item["volume"].get<std::string>());
                 ohlcv_list.values.push_back(ohlcv);
-            }
+            } 
 
-            // Print the collected OHLCV data
+            // Save closing prices to a CSV file
+            std::ofstream csv_file("closing_prices.csv");
+            csv_file << "datetime,close\n";
             for (const auto& ohlcv : ohlcv_list.values) {
-                std::cout << "Datetime: " << ohlcv.datetime << ", "
-                          << "Open: " << ohlcv.open << ", "
-                          << "High: " << ohlcv.high << ", "
-                          << "Low: " << ohlcv.low << ", "
-                          << "Close: " << ohlcv.close << ", "
-                          << "Volume: " << ohlcv.volume << std::endl;
+                csv_file << ohlcv.datetime << "," << ohlcv.close << "\n";
             }
+            csv_file.close();
+            std::cout << "Saved closing prices to closing_prices.csv" << std::endl;
 
         // Catching a JSON parsing error
         } catch (json::parse_error& e) {

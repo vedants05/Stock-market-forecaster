@@ -3,3 +3,4 @@
 /.vscode/
 /.vs/
 data_extraction/config.properties
+/data_extraction/output/

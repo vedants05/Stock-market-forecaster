@@ -6,7 +6,6 @@
 // Loads the API key from config.properties file
 std::string load_api_key(const std::string &filepath) {
 
-
 	// Open the file
 	std::ifstream file(filepath);
 	if (!file.is_open()) {
