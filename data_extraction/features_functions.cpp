@@ -34,14 +34,31 @@ double SMA_standard_deviation(std::vector<double> closing_prices, int timeframe)
 }
 
 // Function to compute Bollinger Bands from SMA and standard deviation
-std::pair<double,double> bollinger_bands(std::vector<double> closing_prices, int timeframe) {
+double calc_percent_b(std::vector<double> closing_prices, int timeframe) {
+
+    //Calculate the SMA and standard deviation
     double simple_moving_avg_n = simple_moving_avg(closing_prices, timeframe);
     double standard_deviation = SMA_standard_deviation(closing_prices, timeframe);
+
+    //Calculate upper and lower Bollinger Bands
     double upper_bollinger_band = simple_moving_avg_n + 2*standard_deviation;
     double lower_bollinger_band = simple_moving_avg_n - 2*standard_deviation;
-    return std::make_pair(upper_bollinger_band, lower_bollinger_band);
+
+    //Get the most recent closing price
+    double last_price = closing_prices.back();
+
+    //Calculate %B
+    double band_range = upper_bollinger_band - lower_bollinger_band;
+    if (band_range == 0) {
+        return 0.5; // If range is 0, the price is exactly in the middle
+    }
+    else {
+        double percent_b = (last_price - lower_bollinger_band) / band_range;
+        return percent_b; 
+    }
 
 }
+
 
 double final_RSI(std::vector<double> closing_prices, int timeframe) {
     std::vector<double> daily_changes; // creates a vector to calculate the changes in price each day

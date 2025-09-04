@@ -10,6 +10,9 @@ struct OHLCV {
     double low;
     double close;
     long long volume;
+
+    // New field for %B value
+    double percentB;
 };
 
 // Struct to hold a list of OHLCV values

@@ -7,7 +7,6 @@
 #include "features_functions.hpp"
 
 
-
 int main() {
     // Create a JSON object type alias for convenience
     using json = nlohmann::json;
@@ -55,14 +54,38 @@ int main() {
                 ohlcv_list.values.push_back(ohlcv);
             } 
 
-            // Save closing prices to a CSV file
-            std::ofstream csv_file("closing_prices.csv");
-            csv_file << "datetime,close\n";
+            // --- ✨ Integration of %B Calculation ---
+            const int BOLLINGER_PERIOD = 20; // Define your Bollinger Band period
+
+            // Second pass: Calculate %B and add it to the OHLCV objects
+            for (size_t i = 0; i < ohlcv_list.values.size(); ++i) {
+                if (i >= BOLLINGER_PERIOD - 1) {
+                    // Create a window of the last `PERIOD` closing prices
+                    std::vector<double> price_window(
+                        (ohlcv_list.values.begin() + i - (BOLLINGER_PERIOD - 1))->close, 
+                        (ohlcv_list.values.begin() + i + 1)->close
+                    );
+                    // Calculate and assign the %B value
+                    ohlcv_list.values[i].percentB = calc_percent_b(price_window, BOLLINGER_PERIOD);
+                } else {
+                    // Not enough data for the initial points
+                    ohlcv_list.values[i].percentB = NAN;
+                }
+            }
+
+            // --- Save the combined data to a CSV file ---
+            std::ofstream csv_file("aapl_data_with_features.csv");
+            csv_file << "datetime,close,percent_b\n"; // Add new column to header
             for (const auto& ohlcv : ohlcv_list.values) {
-                csv_file << ohlcv.datetime << "," << ohlcv.close << "\n";
+                csv_file << ohlcv.datetime << "," << ohlcv.close << ",";
+                if (std::isnan(ohlcv.percentB)) {
+                    csv_file << "NaN\n";
+                } else {
+                    csv_file << ohlcv.percentB << "\n";
+                }
             }
             csv_file.close();
-            std::cout << "Saved closing prices to closing_prices.csv" << std::endl;
+            std::cout << "Saved data with %B to aapl_data_with_features.csv" << std::endl;
 
         // Catching a JSON parsing error
         } catch (json::parse_error& e) {
@@ -73,6 +96,8 @@ int main() {
         std::cerr << "Error fetching data. Status code: " << r.status_code << std::endl;
         std::cerr << "Response: " << r.text << std::endl;
     }
+
+
 
     return 0;
 }
