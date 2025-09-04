@@ -1,7 +1,7 @@
 #include <iostream>
-#include <vector> // for std::vector
+#include <vector> 
 #include <cmath>
-#include <numeric> // for accumulate
+#include <numeric> 
 
 #include "features_functions.hpp"
 

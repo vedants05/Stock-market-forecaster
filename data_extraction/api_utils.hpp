@@ -1,3 +1,6 @@
+#ifndef API_UTILS_HPP
+#define API_UTILS_HPP
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -11,13 +14,24 @@ struct OHLCV {
     double close;
     long long volume;
 
-    // New field for %B value
     double percentB;
 };
 
 // Struct to hold a list of OHLCV values
 struct OHLCVList {
     std::vector<OHLCV> values;
+
+    int size() { 
+        return values.size(); 
+    }
+
+    std::vector<double> get_closing_prices() {
+        std::vector<double> closing_prices;
+        for (const auto& ohlcv : values) {
+            closing_prices.push_back(ohlcv.close);
+        }
+        return closing_prices;
+    }
 };
 
 // Struct to represent an API URL and its components
@@ -36,3 +50,5 @@ struct APIUrl {
 
 
 std::string load_api_key(const std::string &filepath);
+
+#endif

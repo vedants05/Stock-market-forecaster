@@ -1,10 +1,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "api_utils.hpp" //for OHLCV struct
 #include <cpr/cpr.h> //for HTTP requests
 #include "nlohmann/json.hpp" //for JSON parsing
+
+#include "api_utils.hpp" 
 #include "features_functions.hpp"
+#include "feature_utils.hpp"
 
 
 int main() {
@@ -54,27 +56,11 @@ int main() {
                 ohlcv_list.values.push_back(ohlcv);
             } 
 
-            // --- ✨ Integration of %B Calculation ---
-            const int BOLLINGER_PERIOD = 20; // Define your Bollinger Band period
 
-            // Second pass: Calculate %B and add it to the OHLCV objects
-            for (size_t i = 0; i < ohlcv_list.values.size(); ++i) {
-                if (i >= BOLLINGER_PERIOD - 1) {
-                    // Create a window of the last `PERIOD` closing prices
-                    std::vector<double> price_window(
-                        (ohlcv_list.values.begin() + i - (BOLLINGER_PERIOD - 1))->close, 
-                        (ohlcv_list.values.begin() + i + 1)->close
-                    );
-                    // Calculate and assign the %B value
-                    ohlcv_list.values[i].percentB = calc_percent_b(price_window, BOLLINGER_PERIOD);
-                } else {
-                    // Not enough data for the initial points
-                    ohlcv_list.values[i].percentB = NAN;
-                }
-            }
+            add_percentB_to_ohlcv(ohlcv_list);
 
             // --- Save the combined data to a CSV file ---
-            std::ofstream csv_file("aapl_data_with_features.csv");
+            std::ofstream csv_file("training_data.csv");
             csv_file << "datetime,close,percent_b\n"; // Add new column to header
             for (const auto& ohlcv : ohlcv_list.values) {
                 csv_file << ohlcv.datetime << "," << ohlcv.close << ",";
